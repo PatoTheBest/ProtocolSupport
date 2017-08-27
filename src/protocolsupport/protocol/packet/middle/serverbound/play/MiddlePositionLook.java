@@ -36,8 +36,9 @@ public abstract class MiddlePositionLook extends ServerBoundMiddlePacket {
 				RecyclableCollection<PacketCreator> collection = RecyclableArrayList.create();
 				PacketCreator creator = PacketCreator.create(ServerBoundPacket.PLAY_TELEPORT_ACCEPT);
 				creator.writeVarInt(teleportId);
+				collection.add(creator);
 				collection.add(createPacket());
-				return RecyclableSingletonList.create(creator);
+				return collection;
 			}
 		}
 	}
