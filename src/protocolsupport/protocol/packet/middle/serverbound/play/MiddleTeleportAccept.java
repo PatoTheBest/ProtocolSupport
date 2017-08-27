@@ -21,7 +21,7 @@ public abstract class MiddleTeleportAccept extends ServerBoundMiddlePacket {
 		}
 	}
 
-	public static RecyclableCollection<ServerBoundPacketData> create(int teleportId) {
+	private static RecyclableCollection<ServerBoundPacketData> create(int teleportId) {
 		return RecyclableSingletonList.create(createPacket(teleportId));
 	}
 
