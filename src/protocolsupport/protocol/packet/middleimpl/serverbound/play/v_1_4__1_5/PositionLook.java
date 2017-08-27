@@ -4,6 +4,7 @@ import protocolsupport.protocol.packet.ServerBoundPacket;
 import protocolsupport.protocol.packet.middle.ServerBoundMiddlePacket;
 import protocolsupport.protocol.packet.middleimpl.PacketCreator;
 import protocolsupport.protocol.serializer.ProtocolSupportPacketDataSerializer;
+import protocolsupport.utils.recyclable.RecyclableArrayList;
 import protocolsupport.utils.recyclable.RecyclableCollection;
 import protocolsupport.utils.recyclable.RecyclableEmptyList;
 import protocolsupport.utils.recyclable.RecyclableSingletonList;
@@ -39,25 +40,32 @@ public class PositionLook extends ServerBoundMiddlePacket {
 			return RecyclableSingletonList.create(creator);
 		} else {
 			if (!sharedstorage.isTeleportConfirmNeeded()) {
-				PacketCreator creator = PacketCreator.create(ServerBoundPacket.PLAY_POSITION_LOOK);
-				creator.writeDouble(x);
-				creator.writeDouble(y);
-				creator.writeDouble(z);
-				creator.writeFloat(yaw);
-				creator.writeFloat(pitch);
-				creator.writeBoolean(onGround);
+				PacketCreator creator = createPacket();
 				return RecyclableSingletonList.create(creator);
 			} else {
 				int teleportId = sharedstorage.tryTeleportConfirm(x, y, z);
 				if (teleportId == -1) {
 					return RecyclableEmptyList.get();
 				} else {
+					RecyclableCollection<PacketCreator> collection = RecyclableArrayList.create();
 					PacketCreator creator = PacketCreator.create(ServerBoundPacket.PLAY_TELEPORT_ACCEPT);
 					creator.writeVarInt(teleportId);
+					collection.add(createPacket());
 					return RecyclableSingletonList.create(creator);
 				}
 			}
 		}
+	}
+
+	private PacketCreator createPacket() {
+		PacketCreator creator = PacketCreator.create(ServerBoundPacket.PLAY_POSITION_LOOK);
+		creator.writeDouble(x);
+		creator.writeDouble(y);
+		creator.writeDouble(z);
+		creator.writeFloat(yaw);
+		creator.writeFloat(pitch);
+		creator.writeBoolean(onGround);
+		return creator;
 	}
 
 }

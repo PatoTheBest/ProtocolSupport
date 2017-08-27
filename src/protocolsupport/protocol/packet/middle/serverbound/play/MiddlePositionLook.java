@@ -3,6 +3,7 @@ package protocolsupport.protocol.packet.middle.serverbound.play;
 import protocolsupport.protocol.packet.ServerBoundPacket;
 import protocolsupport.protocol.packet.middle.ServerBoundMiddlePacket;
 import protocolsupport.protocol.packet.middleimpl.PacketCreator;
+import protocolsupport.utils.recyclable.RecyclableArrayList;
 import protocolsupport.utils.recyclable.RecyclableCollection;
 import protocolsupport.utils.recyclable.RecyclableEmptyList;
 import protocolsupport.utils.recyclable.RecyclableSingletonList;
@@ -32,11 +33,24 @@ public abstract class MiddlePositionLook extends ServerBoundMiddlePacket {
 			if (teleportId == -1) {
 				return RecyclableEmptyList.get();
 			} else {
+				RecyclableCollection<PacketCreator> collection = RecyclableArrayList.create();
 				PacketCreator creator = PacketCreator.create(ServerBoundPacket.PLAY_TELEPORT_ACCEPT);
 				creator.writeVarInt(teleportId);
+				collection.add(createPacket());
 				return RecyclableSingletonList.create(creator);
 			}
 		}
+	}
+
+	private PacketCreator createPacket() {
+		PacketCreator creator = PacketCreator.create(ServerBoundPacket.PLAY_POSITION_LOOK);
+		creator.writeDouble(x);
+		creator.writeDouble(y);
+		creator.writeDouble(z);
+		creator.writeFloat(yaw);
+		creator.writeFloat(pitch);
+		creator.writeBoolean(onGround);
+		return creator;
 	}
 
 }
